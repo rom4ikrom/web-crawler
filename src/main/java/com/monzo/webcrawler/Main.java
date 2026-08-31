@@ -1,6 +1,10 @@
 package com.monzo.webcrawler;
 
-import jdk.jshell.execution.Util;
+import com.monzo.webcrawler.domain.url.SameDomainUnvisitedUrlsProvider;
+import com.monzo.webcrawler.domain.url.UrlNormaliser;
+import com.monzo.webcrawler.domain.url.UrlsExtractor;
+import com.monzo.webcrawler.infrastructure.jsoup.JsoupFacade;
+import com.monzo.webcrawler.infrastructure.jsoup.JsoupUrlsExtractor;
 
 import java.util.Queue;
 import java.util.Set;
@@ -16,16 +20,15 @@ public class Main {
         queue.offer(startingUrl);
         Set<String> visited = ConcurrentHashMap.newKeySet();
 
-        UrlProvider urlProvider = new UrlProvider();
+        UrlsExtractor urlsExtractor = new JsoupUrlsExtractor(new JsoupFacade());
+        UrlNormaliser urlNormaliser = new UrlNormaliser();
+        SameDomainUnvisitedUrlsProvider urlProvider = new SameDomainUnvisitedUrlsProvider(urlsExtractor, urlNormaliser);
 
         while (!queue.isEmpty()) {
             String url = queue.poll();
             visited.add(url);
 
-            System.out.println("Visiting " + url);
-
             for (String newUrl : urlProvider.urls(url, domain, visited)) {
-                System.out.println("Found " + newUrl);
                 queue.offer(newUrl);
             }
         }

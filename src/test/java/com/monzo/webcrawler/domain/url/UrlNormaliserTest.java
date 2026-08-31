@@ -48,8 +48,15 @@ class UrlNormaliserTest {
     @Test
     void throwsExceptionWhenURIHasNotAcceptableScheme() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> underTest.normalise("ftp://example.com/file"))
-                .withMessage("Provided URI ftp://example.com/file has not acceptable scheme.");
+                .isThrownBy(() -> underTest.normalise("ftp://something.com/file"))
+                .withMessage("Provided URI ftp://something.com/file has not acceptable scheme.");
+    }
+
+    @Test
+    void throwsExceptionWhenHostIsNull() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> underTest.normalise("http:foo"))
+                .withMessage("URI must contain valid host.");
     }
 
 }

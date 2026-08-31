@@ -11,4 +11,8 @@ public class NormalisedUrl {
     @NonNull
     String domain;
 
+    public boolean hasSameDomainAs(String other) {
+        return this.domain.equals(other);
+    }
+
 }
