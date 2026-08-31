@@ -1,5 +1,6 @@
 package com.monzo.webcrawler.domain.url;
 
+import lombok.Value;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -9,6 +10,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.net.URISyntaxException;
 
+import static com.monzo.webcrawler.domain.url.UrlNormalisationResult.*;
 import static org.assertj.core.api.Assertions.*;
 
 class UrlNormaliserTest {
@@ -21,42 +23,16 @@ class UrlNormaliserTest {
             "http://something.com/product/123,http://something.com/product/123",
             "http://something.com/product/123#section,http://something.com/product/123"
     })
-    void returnsNormalisedUrl(String input, String expected) {
-        // when
-        NormalisedUrl result = underTest.normalise(input);
-
-        // then
-        assertThat(result).isEqualTo(new NormalisedUrl(expected, "something.com"));
+    void returnsNormalisedUrlResult(String input, String expected) {
+        assertThat(underTest.normalise(input))
+                .isEqualTo(new NormalisedUrl(expected, "something.com"));
     }
 
     @ParameterizedTest
     @NullSource @EmptySource
-    @ValueSource(strings = " ")
-    void throwsExceptionWhenProvidedValueIsInvalid(String value) {
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> underTest.normalise(value))
-                .withMessage("Provided string must not be null, empty or whitespace.");
-    }
-
-    @Test
-    void throwsExceptionWhenURIHasInvalidSyntax() {
-        assertThatRuntimeException()
-                .isThrownBy(() -> underTest.normalise("http://something.com/foo bar"))
-                .withRootCauseExactlyInstanceOf(URISyntaxException.class);
-    }
-
-    @Test
-    void throwsExceptionWhenURIHasNotAcceptableScheme() {
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> underTest.normalise("ftp://something.com/file"))
-                .withMessage("Provided URI ftp://something.com/file has not acceptable scheme.");
-    }
-
-    @Test
-    void throwsExceptionWhenHostIsNull() {
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> underTest.normalise("http:foo"))
-                .withMessage("URI must contain valid host.");
+    @ValueSource(strings = {" ", "http://something.com/foo bar", "ftp://something.com/file", "http:foo"})
+    void returnsInvalidUrlResult(String value) {
+        assertThat(underTest.normalise(value)).isEqualTo(InvalidUrl.instance());
     }
 
 }
