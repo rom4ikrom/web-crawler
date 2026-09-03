@@ -4,6 +4,8 @@ import com.monzo.webcrawler.domain.listener.PageStoredListener;
 import com.monzo.webcrawler.domain.model.Page;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -13,6 +15,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConsoleOutputPageStoredConsumer implements PageStoredListener {
+
+    private static final Logger LOG = LogManager.getLogger();
 
     private final BlockingQueue<Page> queue;
     private final ExecutorService executorService;
@@ -35,9 +39,9 @@ public class ConsoleOutputPageStoredConsumer implements PageStoredListener {
             while (!Thread.currentThread().isInterrupted()) {
                 Page page = queue.take();
                 List<String> urls = page.urls();
-                System.out.printf("Discovered %s URLs for: %s%n", urls.size(), page.url());
+                LOG.info("Discovered {} URLs for: {}", urls.size(), page.url());
                 for (int i = 1; i <= urls.size(); i++) {
-                    System.out.println(i + ". " + urls.get(i - 1));
+                    LOG.info("{}. {}", i, urls.get(i - 1));
                 }
             }
         } catch (InterruptedException ex) {

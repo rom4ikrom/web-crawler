@@ -1,18 +1,24 @@
 package com.monzo.webcrawler.application;
 
+import com.monzo.webcrawler.domain.model.Page;
 import com.monzo.webcrawler.domain.repository.PageRepository;
+import com.monzo.webcrawler.domain.url.UrlNormalisationResult;
 import com.monzo.webcrawler.domain.url.UrlNormaliser;
 import com.monzo.webcrawler.domain.url.UrlsExtractor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.Closeable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.*;
 
 import static com.monzo.webcrawler.domain.url.UrlNormalisationResult.*;
 
 public class WebCrawler implements Closeable {
+
+    private static final Logger LOG = LogManager.getLogger();
 
     private final int workerCount;
     private final CrawlTracker crawlTracker;
@@ -40,26 +46,46 @@ public class WebCrawler implements Closeable {
     }
 
     public void start(NormalisedUrl startUrl) throws InterruptedException {
-        for (int i = 0; i < workerCount; i++) {
-            executorService.submit(new CrawlTask(urlsExtractor, urlNormaliser, pageRepository, crawlTracker));
-        }
-
-        crawlTracker.submit(startUrl);
+        submit(startUrl);
         crawlTracker.awaitCompletion();
+    }
+
+    private void submit(NormalisedUrl normalisedUrl) {
+        if (!crawlTracker.submit(normalisedUrl)) {
+            return;
+        }
+        crawlTracker.submitted();
+        try {
+            executorService.submit(() -> process(normalisedUrl));
+        } catch (RejectedExecutionException ex) {
+            crawlTracker.complete();
+            throw ex;
+        }
+    }
+
+    private void process(NormalisedUrl url) {
+        String target = url.value();
+        LOG.info("Processing: {}", target);
+        try {
+            Set<String> extractedUrls = urlsExtractor.extract(target);
+
+            Page page = new Page(UUID.randomUUID().toString(), target, List.copyOf(extractedUrls));
+            pageRepository.store(page);
+
+            for (String extractedUrl : extractedUrls) {
+                UrlNormalisationResult result = urlNormaliser.normalise(extractedUrl);
+                switch (result) {
+                    case NormalisedUrl normalisedUrl -> submit(normalisedUrl);
+                    default -> {}
+                }
+            }
+        } finally {
+            crawlTracker.complete();
+        }
     }
 
     @Override
     public void close() {
         executorService.shutdown();
-        try {
-            if (!executorService.awaitTermination(10, TimeUnit.SECONDS)) {
-                executorService.shutdownNow();
-                if (!executorService.awaitTermination(10, TimeUnit.SECONDS))
-                    System.err.println("Pool did not terminate");
-            }
-        } catch (InterruptedException ex) {
-            executorService.shutdownNow();
-            Thread.currentThread().interrupt();
-        }
     }
 }

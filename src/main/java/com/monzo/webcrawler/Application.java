@@ -32,7 +32,7 @@ public class Application {
         System.out.println("Starting ...");
 
         try (
-                WebCrawler webCrawler = new WebCrawler(1, crawlTracker, urlsExtractor, urlNormaliser, pageRepository);
+                WebCrawler webCrawler = new WebCrawler(5, crawlTracker, urlsExtractor, urlNormaliser, pageRepository);
                 PageStoredListener pageStoredListener = new ConsoleOutputPageStoredConsumer();
         ) {
             pageRepository.addListener(pageStoredListener);

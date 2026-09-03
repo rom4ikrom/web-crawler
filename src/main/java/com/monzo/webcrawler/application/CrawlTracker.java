@@ -19,20 +19,21 @@ public class CrawlTracker {
 
     private final String startUrlDomain;
 
-    public void submit(NormalisedUrl normalisedUrl) {
+    public synchronized boolean submit(NormalisedUrl normalisedUrl) {
         if (!normalisedUrl.hasSameDomainAs(startUrlDomain)) {
-            return;
+            return false;
         }
 
-        if (visited.size() >= 100) {
-            return;
-        }
+//        if (visited.size() >= 100) {
+//            return false;
+//        }
 
         String url = normalisedUrl.value();
-        if (visited.add(url)) {
-            pending.incrementAndGet();
-            queue.offer(url);
-        }
+        return visited.add(url);
+    }
+
+    public void submitted() {
+        pending.incrementAndGet();
     }
 
     public String take() throws InterruptedException {
