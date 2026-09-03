@@ -37,8 +37,8 @@ public class UrlNormaliser {
                 return InvalidUrl.instance();
             }
             URL url = uri.toURL();
-            String normalised = url.getProtocol().toLowerCase() + "://" + host.toLowerCase() + url.getPath() + queryOrEmpty(url);
-            return new NormalisedUrl(normalised, url.getHost());
+            String normalised = url.getProtocol() + "://" + host+ url.getPath() + queryOrEmpty(url);
+            return new NormalisedUrl(normalised.toLowerCase(), url.getHost().toLowerCase());
         } catch (URISyntaxException | MalformedURLException ex) {
             return InvalidUrl.instance();
         }

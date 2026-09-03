@@ -18,7 +18,8 @@ class UrlNormaliserTest {
     @CsvSource(value = {
             "http://something.com/product/123?param=other,http://something.com/product/123?param=other",
             "http://something.com/product/123,http://something.com/product/123",
-            "http://something.com/product/123#section,http://something.com/product/123"
+            "http://something.com/product/123#section,http://something.com/product/123",
+            "http://SOMETHING.com/PRODUCT/123#section,http://something.com/product/123"
     })
     void returnsNormalisedUrlResult(String input, String expected) {
         assertThat(underTest.normalise(input))

@@ -20,7 +20,6 @@ public class WebCrawler implements Closeable {
 
     private static final Logger LOG = LogManager.getLogger();
 
-    private final int workerCount;
     private final CrawlTracker crawlTracker;
     private final ExecutorService executorService;
 
@@ -33,7 +32,6 @@ public class WebCrawler implements Closeable {
                       UrlsExtractor urlsExtractor,
                       UrlNormaliser urlNormaliser,
                       PageRepository pageRepository) {
-        this.workerCount = workerCount;
         this.crawlTracker = crawlTracker;
         ThreadFactory threadFactory = Thread.ofVirtual()
                 .name("crawler-", 0)
