@@ -26,7 +26,7 @@ public class Application {
         CrawlTracker crawlTracker = new CrawlTracker(normalisedStartUrl.domain());
         UrlsExtractor urlsExtractor = new JsoupUrlsExtractor(new JsoupFacade());
 
-        PageRepository pageRepository = new InMemoryPageRepository(new ConcurrentHashMap<>(), new ArrayList<>());
+        PageRepository pageRepository = new InMemoryPageRepository();
 
         long start = System.nanoTime();
         System.out.println("Starting ...");

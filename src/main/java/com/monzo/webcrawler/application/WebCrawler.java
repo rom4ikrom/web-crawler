@@ -67,7 +67,11 @@ public class WebCrawler implements Closeable {
         try {
             Set<String> extractedUrls = urlsExtractor.extract(target);
 
-            Page page = new Page(UUID.randomUUID().toString(), target, List.copyOf(extractedUrls));
+            Page page = Page.builder()
+                    .id(UUID.randomUUID().toString())
+                    .url(target)
+                    .urls(List.copyOf(extractedUrls))
+                    .build();
             pageRepository.store(page);
 
             for (String extractedUrl : extractedUrls) {
