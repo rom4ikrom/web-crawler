@@ -1,17 +1,14 @@
 package com.monzo.webcrawler.domain.url;
 
-import lombok.Value;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.net.URISyntaxException;
-
-import static com.monzo.webcrawler.domain.url.UrlNormalisationResult.*;
-import static org.assertj.core.api.Assertions.*;
+import static com.monzo.webcrawler.domain.url.UrlNormalisationResult.InvalidUrl;
+import static com.monzo.webcrawler.domain.url.UrlNormalisationResult.NormalisedUrl;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class UrlNormaliserTest {
 

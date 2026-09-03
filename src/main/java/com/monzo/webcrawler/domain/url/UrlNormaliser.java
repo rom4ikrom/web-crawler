@@ -14,6 +14,13 @@ public class UrlNormaliser {
 
     private static final Set<String> ACCEPTED_SCHEMES = Set.of("http", "https");
 
+    public NormalisedUrl normalisedUrlOrThrow(String value) {
+        return switch (normalise(value)) {
+            case NormalisedUrl normalisedUrl -> normalisedUrl;
+            default -> throw new RuntimeException();
+        };
+    }
+
     public UrlNormalisationResult normalise(String value) {
         if (value == null || value.isBlank()) {
             return InvalidUrl.instance();
