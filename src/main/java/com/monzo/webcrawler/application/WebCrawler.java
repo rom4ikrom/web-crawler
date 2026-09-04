@@ -1,20 +1,16 @@
 package com.monzo.webcrawler.application;
 
-import com.monzo.webcrawler.domain.model.Page;
-import com.monzo.webcrawler.domain.repository.PageRepository;
-import com.monzo.webcrawler.domain.url.UrlNormalisationResult;
-import com.monzo.webcrawler.domain.url.UrlNormaliser;
-import com.monzo.webcrawler.domain.url.UrlsExtractor;
+import com.monzo.webcrawler.domain.url.UrlProcessor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.Closeable;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ThreadFactory;
 
-import static com.monzo.webcrawler.domain.url.UrlNormalisationResult.*;
+import static com.monzo.webcrawler.domain.url.UrlNormalisationResult.NormalisedUrl;
 
 public class WebCrawler implements Closeable {
 
@@ -23,24 +19,17 @@ public class WebCrawler implements Closeable {
     private final CrawlTracker crawlTracker;
     private final ExecutorService executorService;
 
-    private final UrlsExtractor urlsExtractor;
-    private final UrlNormaliser urlNormaliser;
-    private final PageRepository pageRepository;
+    private final UrlProcessor processor;
 
     public WebCrawler(int workerCount,
                       CrawlTracker crawlTracker,
-                      UrlsExtractor urlsExtractor,
-                      UrlNormaliser urlNormaliser,
-                      PageRepository pageRepository) {
+                      UrlProcessor processor) {
         this.crawlTracker = crawlTracker;
         ThreadFactory threadFactory = Thread.ofVirtual()
                 .name("crawler-", 0)
                 .factory();
         this.executorService = Executors.newFixedThreadPool(workerCount, threadFactory);
-
-        this.urlsExtractor = urlsExtractor;
-        this.urlNormaliser = urlNormaliser;
-        this.pageRepository = pageRepository;
+        this.processor = processor;
     }
 
     public void start(NormalisedUrl startUrl) throws InterruptedException {
@@ -62,25 +51,8 @@ public class WebCrawler implements Closeable {
     }
 
     private void process(NormalisedUrl url) {
-        String target = url.value();
-        LOG.info("Processing: {}", target);
         try {
-            Set<String> extractedUrls = urlsExtractor.extract(target);
-
-            Page page = Page.builder()
-                    .id(UUID.randomUUID().toString())
-                    .url(target)
-                    .urls(List.copyOf(extractedUrls))
-                    .build();
-            pageRepository.store(page);
-
-            for (String extractedUrl : extractedUrls) {
-                UrlNormalisationResult result = urlNormaliser.normalise(extractedUrl);
-                switch (result) {
-                    case NormalisedUrl normalisedUrl -> submit(normalisedUrl);
-                    default -> {}
-                }
-            }
+            processor.process(url).forEach(this::submit);
         } finally {
             crawlTracker.complete();
         }

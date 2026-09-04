@@ -12,8 +12,7 @@ public class JsoupFacade {
     public Document document(String url) {
         try {
             return Jsoup.connect(url).timeout(DEFAULT_TIMEOUT_MILLIS).get();
-        } catch (IOException e) {
-            // TODO handle different edge cases
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

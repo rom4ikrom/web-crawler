@@ -4,15 +4,12 @@ import com.monzo.webcrawler.domain.url.UrlNormalisationResult.NormalisedUrl;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @RequiredArgsConstructor
 public class CrawlTracker {
 
-    private final BlockingQueue<String> queue = new LinkedBlockingQueue<>();
     private final Set<String> visited = ConcurrentHashMap.newKeySet();
     private final AtomicInteger pending = new AtomicInteger();
     private final Object monitor = new Object();
@@ -24,6 +21,7 @@ public class CrawlTracker {
             return false;
         }
 
+        // TODO add optional limit
 //        if (visited.size() >= 100) {
 //            return false;
 //        }
@@ -34,10 +32,6 @@ public class CrawlTracker {
 
     public void submitted() {
         pending.incrementAndGet();
-    }
-
-    public String take() throws InterruptedException {
-        return queue.take();
     }
 
     public void complete() {

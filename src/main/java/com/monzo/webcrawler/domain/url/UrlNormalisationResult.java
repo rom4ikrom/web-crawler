@@ -4,6 +4,8 @@ import lombok.NonNull;
 
 public sealed interface UrlNormalisationResult {
 
+    boolean isNormalised();
+
     record NormalisedUrl(@NonNull String value,
                          @NonNull String domain) implements UrlNormalisationResult {
 
@@ -11,6 +13,10 @@ public sealed interface UrlNormalisationResult {
             return this.domain.equals(other);
         }
 
+        @Override
+        public boolean isNormalised() {
+            return true;
+        }
     }
 
     final class InvalidUrl implements UrlNormalisationResult {
@@ -21,6 +27,11 @@ public sealed interface UrlNormalisationResult {
 
         public static InvalidUrl instance() {
             return INVALID_URL;
+        }
+
+        @Override
+        public boolean isNormalised() {
+            return false;
         }
     }
 

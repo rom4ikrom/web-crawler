@@ -9,7 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Set;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -38,10 +38,10 @@ class JsoupUrlsExtractorTest {
         when(jsoupFacade.document(BASE_URL)).thenReturn(document);
 
         // when
-        Set<String> result = underTest.extract(BASE_URL);
+        List<String> result = underTest.extract(BASE_URL);
 
         // then
-        Set<String> expected = Set.of(
+        List<String> expected = List.of(
                 withBaseUrl("/home"),
                 "https://example.com/external",
                 withBaseUrl("/products/1"),

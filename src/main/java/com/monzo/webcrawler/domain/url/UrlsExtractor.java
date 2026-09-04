@@ -1,9 +1,9 @@
 package com.monzo.webcrawler.domain.url;
 
-import java.util.Set;
+import java.util.List;
 
 public interface UrlsExtractor {
 
-    Set<String> extract(String url);
+    List<String> extract(String url);
 
 }
