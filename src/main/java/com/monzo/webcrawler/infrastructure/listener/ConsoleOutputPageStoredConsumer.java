@@ -4,6 +4,7 @@ import com.monzo.webcrawler.domain.listener.PageStoredListener;
 import com.monzo.webcrawler.domain.model.Page;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,11 +19,13 @@ public class ConsoleOutputPageStoredConsumer implements PageStoredListener {
 
     private static final Logger LOG = LogManager.getLogger();
 
+    private static final Page POISON_PILL = Page.builder().id("poison-pill").url("poison-pill").urls(List.of()).build();
+
     private final BlockingQueue<Page> queue;
-    private final ExecutorService executorService;
+    private Thread thread;
 
     public ConsoleOutputPageStoredConsumer() {
-        this(new LinkedBlockingQueue<>(), Executors.newSingleThreadExecutor());
+        this(new LinkedBlockingQueue<>());
     }
 
     @Override
@@ -31,13 +34,21 @@ public class ConsoleOutputPageStoredConsumer implements PageStoredListener {
     }
 
     public void start() {
-        executorService.submit(this::consumeLoop);
+        thread = Thread.ofVirtual()
+                .name("console-consumer")
+                .start(this::consumeLoop);
     }
 
     private void consumeLoop() {
         try {
             while (!Thread.currentThread().isInterrupted()) {
                 Page page = queue.take();
+
+                if (page == POISON_PILL) {
+                    LOG.info("Poison pill, stopping console thead...");
+                    return;
+                }
+
                 List<String> urls = page.urls();
                 LOG.info("Discovered {} URLs for: {}", urls.size(), page.url());
                 for (int i = 1; i <= urls.size(); i++) {
@@ -49,9 +60,19 @@ public class ConsoleOutputPageStoredConsumer implements PageStoredListener {
         }
     }
 
+    public void completePublishing() {
+        queue.add(POISON_PILL);
+    }
+
     @Override
     public void close() {
-        executorService.shutdownNow();
+        if (thread != null) {
+            thread.interrupt();
+        }
+    }
+
+    public void awaitCompletion() throws InterruptedException {
+        thread.join();
     }
 
 }

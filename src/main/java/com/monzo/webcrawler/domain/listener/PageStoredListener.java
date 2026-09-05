@@ -4,5 +4,4 @@ import com.monzo.webcrawler.domain.model.Page;
 
 public interface PageStoredListener extends AutoCloseable {
     void onPageStored(Page page);
-    void start();
 }

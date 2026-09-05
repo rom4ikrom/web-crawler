@@ -1,6 +1,7 @@
 package com.monzo.webcrawler.application;
 
 import com.monzo.webcrawler.domain.url.UrlNormalisationResult.NormalisedUrl;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
@@ -15,16 +16,16 @@ public class CrawlTracker {
     private final Object monitor = new Object();
 
     private final String startUrlDomain;
+    private final int numberOfLinksToDiscover;
 
     public synchronized boolean submit(NormalisedUrl normalisedUrl) {
         if (!normalisedUrl.hasSameDomainAs(startUrlDomain)) {
             return false;
         }
 
-        // TODO add optional limit
-//        if (visited.size() >= 100) {
-//            return false;
-//        }
+        if (visited.size() >= numberOfLinksToDiscover) {
+            return false;
+        }
 
         String url = normalisedUrl.value();
         return visited.add(url);
