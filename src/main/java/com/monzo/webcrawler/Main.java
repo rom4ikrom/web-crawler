@@ -1,11 +1,15 @@
 package com.monzo.webcrawler;
 
-import com.monzo.webcrawler.application.Application;
+import com.monzo.webcrawler.application.WebCrawlerApplication;
+import com.monzo.webcrawler.bootstrap.ApplicationContext;
+import com.monzo.webcrawler.bootstrap.DependencyOverrides;
 
 public class Main {
 
     static void main(String[] args) {
-        Application.start();
+        DependencyOverrides dependencyOverrides = DependencyOverrides.none();
+        ApplicationContext applicationContext = new ApplicationContext(dependencyOverrides);
+        new WebCrawlerApplication(applicationContext).start();
     }
 
 }

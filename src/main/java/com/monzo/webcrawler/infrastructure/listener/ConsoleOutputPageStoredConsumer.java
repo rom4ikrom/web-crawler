@@ -8,7 +8,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -18,7 +17,7 @@ public class ConsoleOutputPageStoredConsumer implements PageStoredListener, Auto
 
     private static final Page POISON_PILL = Page.builder().id("poison-pill").url("poison-pill").urls(List.of()).build();
 
-    private final BlockingQueue<Page> queue;
+    private final LinkedBlockingQueue<Page> queue;
     private Thread thread;
 
     public ConsoleOutputPageStoredConsumer() {
@@ -27,7 +26,7 @@ public class ConsoleOutputPageStoredConsumer implements PageStoredListener, Auto
 
     @Override
     public void onPageStored(Page page) {
-        queue.offer(page);
+        put(page);
     }
 
     public void start() {
@@ -58,7 +57,7 @@ public class ConsoleOutputPageStoredConsumer implements PageStoredListener, Auto
     }
 
     public void completePublishing() {
-        queue.offer(POISON_PILL);
+        put(POISON_PILL);
     }
 
     @Override
@@ -69,7 +68,18 @@ public class ConsoleOutputPageStoredConsumer implements PageStoredListener, Auto
     }
 
     public void awaitCompletion() throws InterruptedException {
-        thread.join();
+        if (thread != null) {
+            thread.join();
+        }
+    }
+
+    private void put(Page page) {
+        try {
+            queue.put(page);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("Interrupted while publishing page event", e);
+        }
     }
 
 }

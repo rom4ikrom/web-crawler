@@ -1,4 +1,4 @@
-package com.monzo.webcrawler.infrastructure.config;
+package com.monzo.webcrawler.bootstrap;
 
 import com.monzo.webcrawler.application.CrawlConfig;
 import lombok.NonNull;
@@ -9,13 +9,14 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @RequiredArgsConstructor
-public class CrawlConfigParser {
+public class ResourceBasedCrawlConfigProvider implements CrawlConfigProvider {
 
     private static final String FILE_PATH = "/application/config/crawlConfig.json";
 
     @NonNull
     private final JsonMapper jsonMapper;
 
+    @Override
     public CrawlConfig crawlConfig() {
         try (InputStream inputStream = getClass().getResourceAsStream(FILE_PATH)) {
             if (inputStream == null) {

@@ -20,9 +20,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class PersistenceAwareUrlProcessorTest {
+class DefaultUrlProcessorTest {
 
-    private PersistenceAwareUrlProcessor underTest;
+    private DefaultUrlProcessor underTest;
 
     @Mock
     private UrlsExtractor urlsExtractor;
@@ -35,7 +35,7 @@ class PersistenceAwareUrlProcessorTest {
 
     @BeforeEach
     void setup() {
-        underTest = new PersistenceAwareUrlProcessor(
+        underTest = new DefaultUrlProcessor(
                 urlsExtractor, urlNormaliser, pageRepository, idGenerator
         );
     }

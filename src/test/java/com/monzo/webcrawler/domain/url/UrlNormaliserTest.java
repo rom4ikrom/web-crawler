@@ -16,10 +16,13 @@ class UrlNormaliserTest {
 
     @ParameterizedTest
     @CsvSource(value = {
-            "http://something.com/product/123?param=other,http://something.com/product/123?param=other",
-            "http://something.com/product/123,http://something.com/product/123",
-            "http://something.com/product/123#section,http://something.com/product/123",
-            "http://SOMETHING.com/PRODUCT/123#section,http://something.com/product/123"
+            "http://something.com/product/123?param=other,  http://something.com/product/123?param=other",
+            "http://something.com/product/123,              http://something.com/product/123",
+            "http://something.com/product/123#section,      http://something.com/product/123",
+            "http://SOMETHING.com/PRODUCT/123#section,      http://something.com/PRODUCT/123",
+            "http://something.com:8080/test,                http://something.com:8080/test",
+            "http://something.com/a/b/../c,                 http://something.com/a/c",
+            "http://something.com/a/./b,                    http://something.com/a/b"
     })
     void returnsNormalisedUrlResult(String input, String expected) {
         assertThat(underTest.normalise(input))

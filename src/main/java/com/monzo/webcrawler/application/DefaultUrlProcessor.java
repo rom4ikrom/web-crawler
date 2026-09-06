@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 import static com.monzo.webcrawler.domain.url.UrlNormalisationResult.NormalisedUrl;
 
 @RequiredArgsConstructor
-public class PersistenceAwareUrlProcessor implements UrlProcessor {
+public class DefaultUrlProcessor implements UrlProcessor {
 
     private final UrlsExtractor urlsExtractor;
     private final UrlNormaliser urlNormaliser;
