@@ -16,14 +16,14 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
-class ConsoleOutputPageStoredConsumerTest {
+class ConsoleOutputPageStoredListenerTest {
 
-    private ConsoleOutputPageStoredConsumer underTest;
+    private ConsoleOutputPageStoredListener underTest;
     private InMemoryAppender inMemoryAppender;
 
     @BeforeEach
     void setup() {
-        underTest = new ConsoleOutputPageStoredConsumer();
+        underTest = new ConsoleOutputPageStoredListener();
         inMemoryAppender = new InMemoryAppender();
         inMemoryAppender.start();
         Logger logger = logger();

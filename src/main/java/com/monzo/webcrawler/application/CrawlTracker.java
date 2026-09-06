@@ -1,7 +1,6 @@
 package com.monzo.webcrawler.application;
 
 import com.monzo.webcrawler.domain.url.UrlNormalisationResult.NormalisedUrl;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Set;

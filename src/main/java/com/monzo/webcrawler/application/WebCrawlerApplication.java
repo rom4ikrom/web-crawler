@@ -6,7 +6,7 @@ import com.monzo.webcrawler.domain.repository.PageRepository;
 import com.monzo.webcrawler.domain.url.UrlNormalisationResult;
 import com.monzo.webcrawler.domain.url.UrlNormaliser;
 import com.monzo.webcrawler.domain.url.UrlsExtractor;
-import com.monzo.webcrawler.infrastructure.listener.ConsoleOutputPageStoredConsumer;
+import com.monzo.webcrawler.infrastructure.listener.ConsoleOutputPageStoredListener;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,7 +38,7 @@ public class WebCrawlerApplication {
 
         try (
                 WebCrawler webCrawler = new WebCrawler(crawlConfig.numberOfThreads(), crawlTracker, urlProcessor);
-                ConsoleOutputPageStoredConsumer console = new ConsoleOutputPageStoredConsumer();
+                ConsoleOutputPageStoredListener console = new ConsoleOutputPageStoredListener();
         ) {
             pageRepository.addListener(console);
             console.start();

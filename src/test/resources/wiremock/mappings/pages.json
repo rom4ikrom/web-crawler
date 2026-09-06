@@ -3,27 +3,53 @@
     {
       "request": {
         "method": "GET",
-        "url": "/page1"
+        "url": "/"
       },
       "response": {
         "status": 200,
         "headers": {
           "Content-Type": "text/html; charset=UTF-8"
         },
-        "bodyFileName": "page1.html"
+        "bodyFileName": "home.html"
       }
     },
     {
       "request": {
         "method": "GET",
-        "url": "/page2"
+        "url": "/about"
       },
       "response": {
         "status": 200,
         "headers": {
           "Content-Type": "text/html; charset=UTF-8"
         },
-        "bodyFileName": "page2.html"
+        "bodyFileName": "about.html"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/products"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "text/html; charset=UTF-8"
+        },
+        "bodyFileName": "products.html"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/contact"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "text/html; charset=UTF-8"
+        },
+        "bodyFileName": "contact.html"
       }
     }
   ]

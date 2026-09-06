@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class ConsoleOutputPageStoredConsumer implements PageStoredListener, AutoCloseable {
+public class ConsoleOutputPageStoredListener implements PageStoredListener, AutoCloseable {
 
     private static final Logger LOG = LogManager.getLogger();
 
@@ -20,7 +20,7 @@ public class ConsoleOutputPageStoredConsumer implements PageStoredListener, Auto
     private final LinkedBlockingQueue<Page> queue;
     private Thread thread;
 
-    public ConsoleOutputPageStoredConsumer() {
+    public ConsoleOutputPageStoredListener() {
         this(new LinkedBlockingQueue<>());
     }
 

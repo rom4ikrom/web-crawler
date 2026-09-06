@@ -29,6 +29,10 @@ public class InMemoryPageRepository implements PageRepository {
     }
 
     @Override
+    public List<Page> findAll() {
+        return new ArrayList<>(store.values());
+    }
+
     public Optional<Page> maybePage(String id) {
         return Optional.ofNullable(store.get(id));
     }
