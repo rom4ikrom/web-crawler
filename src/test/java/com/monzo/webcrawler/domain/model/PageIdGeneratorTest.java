@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
-class UUIDGeneratorTest {
+class PageIdGeneratorTest {
 
     private PageIdGenerator underTest;
 

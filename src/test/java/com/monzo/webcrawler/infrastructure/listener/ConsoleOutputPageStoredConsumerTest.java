@@ -43,7 +43,7 @@ class ConsoleOutputPageStoredConsumerTest {
     }
 
     @Test
-    void shouldLogDiscoveredUrls() {
+    void shouldLogDiscoveredUrlsAndStopOnPoisonPill() {
         // given
         Page page = Page.builder()
                 .id("a-page-id")
@@ -59,15 +59,17 @@ class ConsoleOutputPageStoredConsumerTest {
         // when
         underTest.onPageStored(page);
         underTest.onPageStored(anotherPage);
+        underTest.completePublishing();
 
         // then
-        await().atMost(Duration.ofSeconds(5)).until(() -> inMemoryAppender.size() == 5);
+        await().atMost(Duration.ofSeconds(5)).until(() -> inMemoryAppender.size() == 6);
         assertThat(inMemoryAppender.eventMessages()).containsExactlyElementsOf(List.of(
                 "Discovered 2 URLs for: http://something.com",
                 "1. http://something.com/products",
                 "2. http://something.com/about",
                 "Discovered 1 URLs for: http://something.com/products",
-                "1. http://something.com/products/1"
+                "1. http://something.com/products/1",
+                "Poison pill, stopping console thead..."
         ));
     }
 

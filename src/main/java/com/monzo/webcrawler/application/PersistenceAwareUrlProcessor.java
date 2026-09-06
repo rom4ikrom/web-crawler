@@ -10,10 +10,9 @@ import com.monzo.webcrawler.domain.url.UrlsExtractor;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.monzo.webcrawler.domain.url.UrlNormalisationResult.*;
+import static com.monzo.webcrawler.domain.url.UrlNormalisationResult.NormalisedUrl;
 
 @RequiredArgsConstructor
 public class PersistenceAwareUrlProcessor implements UrlProcessor {

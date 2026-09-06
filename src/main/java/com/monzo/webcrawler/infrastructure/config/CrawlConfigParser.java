@@ -1,5 +1,6 @@
-package com.monzo.webcrawler.application;
+package com.monzo.webcrawler.infrastructure.config;
 
+import com.monzo.webcrawler.application.CrawlConfig;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import tools.jackson.databind.json.JsonMapper;

@@ -5,13 +5,13 @@ import com.monzo.webcrawler.domain.repository.PageRepository;
 import com.monzo.webcrawler.domain.url.UrlNormalisationResult;
 import com.monzo.webcrawler.domain.url.UrlNormaliser;
 import com.monzo.webcrawler.domain.url.UrlsExtractor;
+import com.monzo.webcrawler.infrastructure.config.CrawlConfigParser;
 import com.monzo.webcrawler.infrastructure.jsoup.JsoupFacade;
 import com.monzo.webcrawler.infrastructure.jsoup.JsoupUrlsExtractor;
 import com.monzo.webcrawler.infrastructure.listener.ConsoleOutputPageStoredConsumer;
 import com.monzo.webcrawler.infrastructure.repository.InMemoryPageRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.util.ReflectionUtil;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Duration;

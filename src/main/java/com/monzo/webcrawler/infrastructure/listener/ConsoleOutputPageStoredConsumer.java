@@ -4,18 +4,15 @@ import com.monzo.webcrawler.domain.listener.PageStoredListener;
 import com.monzo.webcrawler.domain.model.Page;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class ConsoleOutputPageStoredConsumer implements PageStoredListener {
+public class ConsoleOutputPageStoredConsumer implements PageStoredListener, AutoCloseable {
 
     private static final Logger LOG = LogManager.getLogger();
 
@@ -61,7 +58,7 @@ public class ConsoleOutputPageStoredConsumer implements PageStoredListener {
     }
 
     public void completePublishing() {
-        queue.add(POISON_PILL);
+        queue.offer(POISON_PILL);
     }
 
     @Override
