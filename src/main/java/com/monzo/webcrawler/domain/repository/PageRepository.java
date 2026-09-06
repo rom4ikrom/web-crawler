@@ -10,8 +10,6 @@ public interface PageRepository {
 
     void store(Page page);
 
-    List<Page> findAll();
-
     void addListener(PageStoredListener pageStoredListener);
 
 }

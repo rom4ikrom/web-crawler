@@ -3,14 +3,11 @@ package com.monzo.webcrawler.infrastructure.repository;
 import com.monzo.webcrawler.domain.listener.PageStoredListener;
 import com.monzo.webcrawler.domain.model.Page;
 import com.monzo.webcrawler.domain.repository.PageRepository;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class InMemoryPageRepository implements PageRepository {
 
@@ -26,11 +23,6 @@ public class InMemoryPageRepository implements PageRepository {
     public void store(Page page) {
         store.putIfAbsent(page.id(), page);
         notifyListeners(page);
-    }
-
-    @Override
-    public List<Page> findAll() {
-        return new ArrayList<>(store.values());
     }
 
     public Optional<Page> maybePage(String id) {

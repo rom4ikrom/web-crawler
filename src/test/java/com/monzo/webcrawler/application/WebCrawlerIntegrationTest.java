@@ -5,6 +5,7 @@ import com.monzo.webcrawler.bootstrap.DependencyOverrides;
 import com.monzo.webcrawler.bootstrap.TestFixedCrawlConfigProvider;
 import com.monzo.webcrawler.domain.model.Page;
 import com.monzo.webcrawler.domain.repository.PageRepository;
+import com.monzo.webcrawler.infrastructure.listener.TestUrlsOnlyPageStoredListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -25,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class WebCrawlerIntegrationTest {
 
     private ApplicationContext applicationContext;
-    private PageRepository pageRepository;
+    private TestUrlsOnlyPageStoredListener testUrlsOnlyPageStoredListener;
 
     @Container
     static final GenericContainer<?> wireMock =
@@ -46,7 +47,8 @@ public class WebCrawlerIntegrationTest {
         CrawlConfig crawlConfig = new CrawlConfig(wiremockUrl(), 1, 10);
         dependencyOverrides.override(new TestFixedCrawlConfigProvider(crawlConfig));
         applicationContext = new ApplicationContext(dependencyOverrides);
-        pageRepository = applicationContext.pageRepository();
+        testUrlsOnlyPageStoredListener = new TestUrlsOnlyPageStoredListener();
+        applicationContext.pageRepository().addListener(testUrlsOnlyPageStoredListener);
     }
 
     @Test
@@ -74,9 +76,8 @@ public class WebCrawlerIntegrationTest {
                 wiremockUrl + "/products",
                 wiremockUrl + "/contact"
         );
-        List<Page> allPages = pageRepository.findAll();
-        assertThat(crawledUrls(allPages)).containsExactlyInAnyOrderElementsOf(expectedCrawledUrls);
-        assertThat(discoveredUrls(allPages)).containsExactlyInAnyOrderElementsOf(expectedDiscoveredUrls);
+        assertThat(testUrlsOnlyPageStoredListener.crawledUrls()).containsExactlyInAnyOrderElementsOf(expectedCrawledUrls);
+        assertThat(testUrlsOnlyPageStoredListener.discoveredUrls()).containsExactlyInAnyOrderElementsOf(expectedDiscoveredUrls);
     }
 
     private static String wiremockUrl() {
