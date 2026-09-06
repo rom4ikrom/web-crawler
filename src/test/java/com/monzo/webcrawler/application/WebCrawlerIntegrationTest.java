@@ -3,10 +3,7 @@ package com.monzo.webcrawler.application;
 import com.monzo.webcrawler.bootstrap.ApplicationContext;
 import com.monzo.webcrawler.bootstrap.DependencyOverrides;
 import com.monzo.webcrawler.bootstrap.TestFixedCrawlConfigProvider;
-import com.monzo.webcrawler.domain.model.Page;
-import com.monzo.webcrawler.domain.repository.PageRepository;
 import com.monzo.webcrawler.infrastructure.listener.TestUrlsOnlyPageStoredListener;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.testcontainers.containers.GenericContainer;
@@ -17,16 +14,13 @@ import org.testcontainers.utility.MountableFile;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 @Testcontainers
 @Timeout(value = 10, unit = TimeUnit.SECONDS)
 public class WebCrawlerIntegrationTest {
-
-    private ApplicationContext applicationContext;
-    private TestUrlsOnlyPageStoredListener testUrlsOnlyPageStoredListener;
 
     @Container
     static final GenericContainer<?> wireMock =
@@ -41,20 +35,16 @@ public class WebCrawlerIntegrationTest {
                                     .forStatusCode(200)
                     );
 
-    @BeforeEach
-    void setup() {
+    @Test
+    void crawlsAndStoresResults() {
+        // given
         DependencyOverrides dependencyOverrides = DependencyOverrides.none();
         CrawlConfig crawlConfig = new CrawlConfig(wiremockUrl(), 1, 10);
         dependencyOverrides.override(new TestFixedCrawlConfigProvider(crawlConfig));
-        applicationContext = new ApplicationContext(dependencyOverrides);
-        testUrlsOnlyPageStoredListener = new TestUrlsOnlyPageStoredListener();
-        applicationContext.pageRepository().addListener(testUrlsOnlyPageStoredListener);
-    }
-
-    @Test
-    void crawlsStoresAndPrintsResults() {
-        // given
+        ApplicationContext applicationContext = new ApplicationContext(dependencyOverrides);
         WebCrawlerApplication webCrawlerApplication = new WebCrawlerApplication(applicationContext);
+        TestUrlsOnlyPageStoredListener testUrlsOnlyPageStoredListener = new TestUrlsOnlyPageStoredListener();
+        applicationContext.pageRepository().addListener(testUrlsOnlyPageStoredListener);
 
         // when
         webCrawlerApplication.start();
@@ -80,19 +70,24 @@ public class WebCrawlerIntegrationTest {
         assertThat(testUrlsOnlyPageStoredListener.discoveredUrls()).containsExactlyInAnyOrderElementsOf(expectedDiscoveredUrls);
     }
 
+    @Test
+    void throwsExceptionIfStartUrlIsInvalid() {
+        // given
+        DependencyOverrides dependencyOverrides = DependencyOverrides.none();
+        CrawlConfig crawlConfig = new CrawlConfig("foo:bar", 1, 10);
+        dependencyOverrides.override(new TestFixedCrawlConfigProvider(crawlConfig));
+        ApplicationContext applicationContext = new ApplicationContext(dependencyOverrides);
+        WebCrawlerApplication webCrawlerApplication = new WebCrawlerApplication(applicationContext);
+
+        // expect
+        assertThatIllegalArgumentException().isThrownBy(webCrawlerApplication::start).withMessage("Invalid URL provided.");
+    }
+
     private static String wiremockUrl() {
         return "http://"
                 + wireMock.getHost()
                 + ":"
                 + wireMock.getMappedPort(8080);
-    }
-
-    private List<String> crawledUrls(List<Page> pages) {
-        return pages.stream().map(Page::url).collect(Collectors.toList());
-    }
-
-    private List<String> discoveredUrls(List<Page> pages) {
-        return pages.stream().map(Page::urls).flatMap(List::stream).collect(Collectors.toList());
     }
 
 }
