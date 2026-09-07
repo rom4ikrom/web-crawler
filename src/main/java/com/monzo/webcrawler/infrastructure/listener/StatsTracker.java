@@ -1,4 +1,4 @@
-package com.monzo.webcrawler.application;
+package com.monzo.webcrawler.infrastructure.listener;
 
 import com.monzo.webcrawler.domain.listener.PageStoredListener;
 import com.monzo.webcrawler.domain.model.Page;

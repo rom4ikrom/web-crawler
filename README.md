@@ -73,8 +73,8 @@ into PageEntity and PageStored models for simplicity. The production app should 
 2. The app does not have any retry mechanism, rate limiting and circuit breaker implementations, again for simplicity. 
 The production app should have those to ensure the crawled website is not overwhelmed and failed calls are retried.
 3. The app does not handle different error responses when fetching documents. The production app should handle 4xx, 5xx and other library-specific errors.
-3. In-memory repository was used for simplicity, a real persistence layer could be used to store the results durably.
-4. The app can benefit from better monitoring (metrics) to better track the progress and overall stats.
-5. Better multithreading control could be introduced, for example, via using Phaser.
-5. A UI could be added to make the user experience of starting, configuring and using the app better.
-6. The test coverage could be improved, for example, by adding architecture tests to make sure the structure of the app/layers will not be violated.
+4. In-memory repository was used for simplicity, a real persistence layer could be used to store the results durably.
+5. The app can benefit from better monitoring (metrics) to better track the progress and overall stats.
+6. Better multithreading control could be introduced, for example, via using Phaser.
+7. UI could be added to make the user experience of starting, configuring and using the app better.
+8. The test coverage could be improved, for example, by adding architecture tests to make sure the structure of the app/layers will not be violated.

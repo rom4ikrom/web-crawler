@@ -25,10 +25,12 @@ class CrawlTrackerTest {
 
     @Test
     void rejectsOverLimit() {
+        // given
         NormalisedUrl firstUrl = new NormalisedUrl("https://something.com/page/1", "something.com");
         NormalisedUrl secondUrl = new NormalisedUrl("https://something.com/page/2", "something.com");
         NormalisedUrl thirdUrl = new NormalisedUrl("https://something.com/page/3", "something.com");
 
+        // expect
         assertThat(underTest.submit(firstUrl)).isTrue();
         assertThat(underTest.submit(secondUrl)).isTrue();
         assertThat(underTest.submit(thirdUrl)).isFalse();

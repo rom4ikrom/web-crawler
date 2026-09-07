@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.jsoup.nodes.Document;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor

@@ -41,7 +41,7 @@ class DefaultUrlProcessorTest {
     }
 
     @Test
-    void shouldStoreAllUrlsAndReturnNormalisedOnly() {
+    void shouldStoreAllUrlsAndReturnSameDomainNormalisedOnly() {
         // given
         UrlNormalisationResult.NormalisedUrl startUrl = new NormalisedUrl("http://something.com", "something.com");
         List<String> extractedUrls = List.of(

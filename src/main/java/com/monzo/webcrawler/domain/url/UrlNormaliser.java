@@ -6,10 +6,9 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Locale;
 import java.util.Set;
 
-import static com.monzo.webcrawler.domain.url.UrlNormalisationResult.*;
+import static com.monzo.webcrawler.domain.url.UrlNormalisationResult.NormalisedUrl;
 
 public class UrlNormaliser {
 

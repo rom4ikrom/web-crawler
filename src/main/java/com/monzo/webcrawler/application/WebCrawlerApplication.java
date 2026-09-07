@@ -7,6 +7,7 @@ import com.monzo.webcrawler.domain.url.UrlNormalisationResult;
 import com.monzo.webcrawler.domain.url.UrlNormaliser;
 import com.monzo.webcrawler.domain.url.UrlsExtractor;
 import com.monzo.webcrawler.infrastructure.listener.ConsoleOutputPageStoredListener;
+import com.monzo.webcrawler.infrastructure.listener.StatsTracker;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
