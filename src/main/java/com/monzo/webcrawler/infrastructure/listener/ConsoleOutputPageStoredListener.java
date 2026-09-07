@@ -13,7 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConsoleOutputPageStoredListener implements PageStoredListener, AutoCloseable {
 
-    private static final Logger LOG = LogManager.getLogger();
+    private static final Logger LOG = LogManager.getLogger(ConsoleOutputPageStoredListener.class);
 
     private static final Page POISON_PILL = Page.builder().id("poison-pill").url("poison-pill").urls(List.of()).build();
 

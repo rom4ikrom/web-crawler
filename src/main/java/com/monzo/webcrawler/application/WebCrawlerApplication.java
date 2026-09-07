@@ -16,7 +16,7 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class WebCrawlerApplication {
 
-    private static final Logger LOG = LogManager.getLogger();
+    private static final Logger LOG = LogManager.getLogger(WebCrawlerApplication.class);
 
     private final ApplicationContext applicationContext;
 

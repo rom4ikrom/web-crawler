@@ -5,11 +5,9 @@ import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import java.io.IOException;
-
 public class JsoupFacade {
 
-    private static final Logger LOG = LogManager.getLogger();
+    private static final Logger LOG = LogManager.getLogger(JsoupFacade.class);
     private static final int DEFAULT_TIMEOUT_MILLIS = 5000;
 
     public Document document(String url) {

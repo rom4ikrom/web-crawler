@@ -10,6 +10,41 @@ for example to facebook.com, monzo.com or community.monzo.com.
 
 ## Architecture
 
+![Web Crawler Diagram](docs/diagrams/webCrawlerDiagram.png)
+
+## Usage
+
+The default configuration will run the crawler for https://crawlme.monzo.com with 20 virtual threads up to 500 unique links visited/crawled.
+The configuration can be changed as described in [Implementation Details](#implementation-details).
+
+Once the configuration is chosen, the application can be built and run using the following two commands:
+
+```shell
+# build docker image
+docker build -t web-crawler .
+```
+
+```shell
+# run and remove once finished
+docker run --rm --name web-crawler web-crawler
+```
+
+The application can be also run without a docker environment, make sure you have the Java 21 installed and active on your path.
+
+```shell
+# run the tests and builds jars
+./gradlew clean build
+```
+
+```shell
+# run the fat jar with all dependencies
+java -jar build/libs/web-crawler-1.0-SNAPSHOT-all.jar
+```
+
+```shell
+# run all tests
+./gradlew clean test
+```
 
 ## Implementation Details
 
@@ -43,7 +78,3 @@ The production app should have those to ensure the crawled website is not overwh
 5. Better multithreading control could be introduced, for example, via using Phaser.
 5. A UI could be added to make the user experience of starting, configuring and using the app better.
 6. The test coverage could be improved, for example, by adding architecture tests to make sure the structure of the app/layers will not be violated.
-
-
-
-

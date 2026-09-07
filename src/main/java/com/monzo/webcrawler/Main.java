@@ -6,7 +6,7 @@ import com.monzo.webcrawler.bootstrap.DependencyOverrides;
 
 public class Main {
 
-    static void main(String[] args) {
+    public static void main(String[] args) {
         DependencyOverrides dependencyOverrides = DependencyOverrides.none();
         ApplicationContext applicationContext = new ApplicationContext(dependencyOverrides);
         new WebCrawlerApplication(applicationContext).start();
