@@ -1,5 +1,7 @@
 package com.monzo.webcrawler.domain.model;
 
+import com.monzo.webcrawler.domain.url.UrlNormalisationResult.InvalidUrl;
+import com.monzo.webcrawler.domain.url.UrlNormalisationResult.NormalisedUrl;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
@@ -13,8 +15,12 @@ public class Page {
     @NonNull
     String id;
     @NonNull
-    String url;
+    NormalisedUrl crawledUrl;
     @NonNull
-    List<String> urls;
+    List<NormalisedUrl> sameDomainUrls;
+    @NonNull
+    List<NormalisedUrl> otherDomainUrls;
+    @NonNull
+    List<InvalidUrl> invalidUrls;
 
 }

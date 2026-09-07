@@ -1,6 +1,7 @@
 package com.monzo.webcrawler.infrastructure.listener;
 
 import com.monzo.webcrawler.domain.model.Page;
+import com.monzo.webcrawler.domain.url.UrlNormalisationResult;
 import com.monzo.webcrawler.util.InMemoryAppender;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -13,10 +14,13 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 import java.util.List;
 
+import static com.monzo.webcrawler.domain.url.UrlNormalisationResult.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
 class ConsoleOutputPageStoredListenerTest {
+
+    private static final String DOMAIN = "something.com";
 
     private ConsoleOutputPageStoredListener underTest;
     private InMemoryAppender inMemoryAppender;
@@ -47,13 +51,19 @@ class ConsoleOutputPageStoredListenerTest {
         // given
         Page page = Page.builder()
                 .id("a-page-id")
-                .url("http://something.com")
-                .urls(List.of("http://something.com/products", "http://something.com/about"))
+                .crawledUrl(new NormalisedUrl("http://something.com", DOMAIN))
+                .sameDomainUrls(List.of(
+                        new NormalisedUrl("http://something.com/products", DOMAIN),
+                        new NormalisedUrl("http://something.com/about", DOMAIN)))
+                .otherDomainUrls(List.of())
+                .invalidUrls(List.of())
                 .build();
         Page anotherPage = Page.builder()
                 .id("another-page-id")
-                .url("http://something.com/products")
-                .urls(List.of("http://something.com/products/1"))
+                .crawledUrl(new NormalisedUrl("http://something.com/products", DOMAIN))
+                .sameDomainUrls(List.of(new NormalisedUrl("http://something.com/products/1", DOMAIN)))
+                .otherDomainUrls(List.of())
+                .invalidUrls(List.of())
                 .build();
 
         // when

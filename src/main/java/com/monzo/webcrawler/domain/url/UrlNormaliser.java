@@ -24,25 +24,25 @@ public class UrlNormaliser {
 
     public UrlNormalisationResult normalise(String value) {
         if (value == null || value.isBlank()) {
-            return InvalidUrl.instance();
+            return new InvalidUrl(value);
         }
 
         try {
             URI uri = new URI(value).normalize();
             String scheme = uri.getScheme();
             if (scheme == null || !ACCEPTED_SCHEMES.contains(scheme.toLowerCase())) {
-                return InvalidUrl.instance();
+                return new InvalidUrl(value);
             }
             String host = uri.getHost();
             if (host == null) {
-                return InvalidUrl.instance();
+                return new InvalidUrl(value);
             }
             URL url = uri.toURL();
             String normalised = url.getProtocol().toLowerCase() + "://" + host.toLowerCase() + portOrEmpty(url)
                     + url.getPath() + queryOrEmpty(url);
             return new NormalisedUrl(normalised, url.getHost().toLowerCase());
         } catch (URISyntaxException | MalformedURLException ex) {
-            return InvalidUrl.instance();
+            return new InvalidUrl(value);
         }
     }
 

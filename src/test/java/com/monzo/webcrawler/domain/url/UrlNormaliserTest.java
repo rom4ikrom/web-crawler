@@ -33,7 +33,7 @@ class UrlNormaliserTest {
     @NullSource @EmptySource
     @ValueSource(strings = {" ", "http://something.com/foo bar", "ftp://something.com/file", "http:foo"})
     void returnsInvalidUrlResult(String value) {
-        assertThat(underTest.normalise(value)).isEqualTo(InvalidUrl.instance());
+        assertThat(underTest.normalise(value)).isEqualTo(new InvalidUrl(value));
     }
 
 }

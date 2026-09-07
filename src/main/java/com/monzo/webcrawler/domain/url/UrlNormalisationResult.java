@@ -4,7 +4,7 @@ import lombok.NonNull;
 
 public sealed interface UrlNormalisationResult {
 
-    boolean isNormalised();
+    String value();
 
     record NormalisedUrl(@NonNull String value,
                          @NonNull String domain) implements UrlNormalisationResult {
@@ -13,26 +13,14 @@ public sealed interface UrlNormalisationResult {
             return this.domain.equals(other);
         }
 
-        @Override
-        public boolean isNormalised() {
-            return true;
-        }
     }
 
-    final class InvalidUrl implements UrlNormalisationResult {
+    record InvalidUrl(String value) implements UrlNormalisationResult {
 
-        private static final InvalidUrl INVALID_URL = new InvalidUrl();
-
-        private InvalidUrl() {}
-
-        public static InvalidUrl instance() {
-            return INVALID_URL;
+        public boolean isNullOrBlank() {
+            return value == null || value.isBlank();
         }
 
-        @Override
-        public boolean isNormalised() {
-            return false;
-        }
     }
 
 

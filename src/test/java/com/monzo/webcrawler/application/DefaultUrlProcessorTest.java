@@ -36,7 +36,7 @@ class DefaultUrlProcessorTest {
     @BeforeEach
     void setup() {
         underTest = new DefaultUrlProcessor(
-                urlsExtractor, urlNormaliser, pageRepository, idGenerator
+                "something.com", urlsExtractor, urlNormaliser, pageRepository, idGenerator
         );
     }
 
@@ -44,30 +44,38 @@ class DefaultUrlProcessorTest {
     void shouldStoreAllUrlsAndReturnNormalisedOnly() {
         // given
         UrlNormalisationResult.NormalisedUrl startUrl = new NormalisedUrl("http://something.com", "something.com");
-        List<String> extractedUrls = List.of("http://something.com/home", "mailto:hello@something.com", "http://something.com/products");
+        List<String> extractedUrls = List.of(
+                "http://something.com/home",
+                "mailto:hello@something.com",
+                "http://something.com/products",
+                "https://instagram.com");
         when(urlsExtractor.extract("http://something.com")).thenReturn(extractedUrls);
         when(idGenerator.nextId()).thenReturn("a-page-id");
-        when(urlNormaliser.normalise("http://something.com/home"))
-                .thenReturn(new NormalisedUrl("http://something.com/home", "something.com"));
-        when(urlNormaliser.normalise("mailto:hello@something.com"))
-                .thenReturn(InvalidUrl.instance());
-        when(urlNormaliser.normalise("http://something.com/products"))
-                .thenReturn(new NormalisedUrl("http://something.com/products", "something.com"));
+
+        // and
+        NormalisedUrl firstSameDomainNormalisedUrl = new NormalisedUrl("http://something.com/home", "something.com");
+        NormalisedUrl secondSameDomainNormalisedUrl = new NormalisedUrl("http://something.com/products", "something.com");
+        InvalidUrl invalidUrl = new InvalidUrl("mailto:hello@something.com");
+        NormalisedUrl otherDomainNormalisedUrl = new NormalisedUrl("https://instagram.com", "instagram.com");
+        when(urlNormaliser.normalise("http://something.com/home")).thenReturn(firstSameDomainNormalisedUrl);
+        when(urlNormaliser.normalise("mailto:hello@something.com")).thenReturn(invalidUrl);
+        when(urlNormaliser.normalise("http://something.com/products")).thenReturn(secondSameDomainNormalisedUrl);
+        when(urlNormaliser.normalise("https://instagram.com")).thenReturn(otherDomainNormalisedUrl);
 
         // when
         List<NormalisedUrl> result = underTest.process(startUrl);
 
         // then
-        assertThat(result).containsExactlyInAnyOrder(
-                new NormalisedUrl("http://something.com/home", "something.com"),
-                new NormalisedUrl("http://something.com/products", "something.com")
-        );
+        List<NormalisedUrl> sameDomainNormalisedUrls = List.of(firstSameDomainNormalisedUrl, secondSameDomainNormalisedUrl);
+        assertThat(result).containsExactlyInAnyOrderElementsOf(sameDomainNormalisedUrls);
 
         // and
         Page expectedPage = Page.builder()
                 .id("a-page-id")
-                .url("http://something.com")
-                .urls(extractedUrls)
+                .crawledUrl(startUrl)
+                .sameDomainUrls(sameDomainNormalisedUrls)
+                .otherDomainUrls(List.of(otherDomainNormalisedUrl))
+                .invalidUrls(List.of(invalidUrl))
                 .build();
         verify(pageRepository, times(1)).store(expectedPage);
     }

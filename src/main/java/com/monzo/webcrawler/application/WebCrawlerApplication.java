@@ -30,8 +30,9 @@ public class WebCrawlerApplication {
         PageRepository pageRepository = applicationContext.pageRepository();
         PageIdGenerator pageIdGenerator = applicationContext.pageIdGenerator();
 
-        CrawlTracker crawlTracker = new CrawlTracker(normalisedStartUrl.domain(), crawlConfig.numberOfLinksToDiscover());
-        DefaultUrlProcessor urlProcessor = new DefaultUrlProcessor(urlsExtractor, urlNormaliser, pageRepository, pageIdGenerator);
+        CrawlTracker crawlTracker = new CrawlTracker(crawlConfig.numberOfUrlsToCrawl());
+        DefaultUrlProcessor urlProcessor = new DefaultUrlProcessor(normalisedStartUrl.domain(), urlsExtractor, urlNormaliser, pageRepository, pageIdGenerator);
+        StatsTracker statsTracker = new StatsTracker();
 
         long start = System.nanoTime();
         LOG.info("Starting Web Crawler for {}", normalisedStartUrl.value());
@@ -41,6 +42,7 @@ public class WebCrawlerApplication {
                 ConsoleOutputPageStoredListener console = new ConsoleOutputPageStoredListener();
         ) {
             pageRepository.addListener(console);
+            pageRepository.addListener(statsTracker);
             console.start();
             webCrawler.start(normalisedStartUrl);
             console.completePublishing();
@@ -51,6 +53,7 @@ public class WebCrawlerApplication {
         }
 
         long finish = System.nanoTime();
+        statsTracker.logStats();
         LOG.info("Finished in {} seconds.", Duration.ofNanos(finish - start).getSeconds());
     }
 

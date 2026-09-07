@@ -1,5 +1,5 @@
 {
   "startUrl": "http://something.com",
   "numberOfThreads": 1,
-  "numberOfLinksToDiscover": 1
+  "numberOfUrlsToCrawl": 1
 }

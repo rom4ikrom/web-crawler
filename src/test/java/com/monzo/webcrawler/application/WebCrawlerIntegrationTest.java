@@ -67,7 +67,7 @@ public class WebCrawlerIntegrationTest {
                 wiremockUrl + "/contact"
         );
         assertThat(testUrlsOnlyPageStoredListener.crawledUrls()).containsExactlyInAnyOrderElementsOf(expectedCrawledUrls);
-        assertThat(testUrlsOnlyPageStoredListener.discoveredUrls()).containsExactlyInAnyOrderElementsOf(expectedDiscoveredUrls);
+        assertThat(testUrlsOnlyPageStoredListener.foundUrls()).containsExactlyInAnyOrderElementsOf(expectedDiscoveredUrls);
     }
 
     @Test

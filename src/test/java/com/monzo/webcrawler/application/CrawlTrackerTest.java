@@ -12,21 +12,7 @@ class CrawlTrackerTest {
 
     @BeforeEach
     void setup() {
-        underTest = new CrawlTracker("something.com", 2);
-    }
-
-    @Test
-    void acceptsUrlFromSameDomain() {
-        NormalisedUrl url = new NormalisedUrl("https://something.com/page", "something.com");
-
-        assertThat(underTest.submit(url)).isTrue();
-    }
-
-    @Test
-    void rejectsUrlFromDifferentDomain() {
-        NormalisedUrl url = new NormalisedUrl("https://other.com/page", "other.com");
-
-        assertThat(underTest.submit(url)).isFalse();
+        underTest = new CrawlTracker(2);
     }
 
     @Test

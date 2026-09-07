@@ -1,5 +1,5 @@
 {
   "startUrl": "https://crawlme.monzo.com",
   "numberOfThreads": 20,
-  "numberOfLinksToDiscover": 500
+  "numberOfUrlsToCrawl": 500
 }

@@ -9,25 +9,25 @@ public class CrawlConfig {
 
     String startUrl;
     int numberOfThreads;
-    int numberOfLinksToDiscover;
+    int numberOfUrlsToCrawl;
 
     @JsonCreator
     CrawlConfig(
             @JsonProperty("startUrl") String startUrl,
             @JsonProperty("numberOfThreads") int numberOfThreads,
-            @JsonProperty("numberOfLinksToDiscover") int numberOfLinksToDiscover) {
+            @JsonProperty("numberOfUrlsToCrawl") int numberOfUrlsToCrawl) {
         if (isBlank(startUrl)) {
             throw new IllegalArgumentException("Start url must be provided.");
         }
         if (!withinLimitForNumberOfThreads(numberOfThreads)) {
             throw new IllegalArgumentException("Number of threads must between 1 and 30.");
         }
-        if (!withinLimitForNumberOfLinksDiscovered(numberOfLinksToDiscover)) {
+        if (!withinLimitForNumberOfLinksDiscovered(numberOfUrlsToCrawl)) {
             throw new IllegalArgumentException("Number of links to discover must be greater than 0.");
         }
         this.startUrl = startUrl;
         this.numberOfThreads = numberOfThreads;
-        this.numberOfLinksToDiscover = numberOfLinksToDiscover;
+        this.numberOfUrlsToCrawl = numberOfUrlsToCrawl;
     }
 
     private boolean isBlank(String value) {

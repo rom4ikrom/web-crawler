@@ -24,10 +24,10 @@ class CrawlConfigTest {
     void throwsExceptionIfConfigIsInvalid(
             String startUrl,
             int numberOfThreads,
-            int numberOfLinksToDiscover,
+            int numberOfUrlsToCrawl,
             String expectedMessage) {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new CrawlConfig(startUrl, numberOfThreads, numberOfLinksToDiscover))
+                .isThrownBy(() -> new CrawlConfig(startUrl, numberOfThreads, numberOfUrlsToCrawl))
                 .withMessage(expectedMessage);
     }
 

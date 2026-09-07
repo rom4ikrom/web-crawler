@@ -52,9 +52,9 @@ Application is written using Java 21.
 The configuration of the app is provided via JSON file [crawlConfig.json](src/main/resources/application/config/crawlConfig.json).
 
 ```text
-startUrl                -> Web Crawler will use this URL as starting point, must be a valid URL
-numberOfThreads         -> Web Crawler uses that number of JVM Virtual Threads to crawl, must be 0 < x <= 30
-numberOfLinksToDiscover -> Web Crawler will stop once it reaches that number of visited URLs, must be x > 0
+startUrl            -> Web Crawler will use this URL as starting point, must be a valid URL
+numberOfThreads     -> Web Crawler uses that number of JVM Virtual Threads to crawl, must be 0 < x <= 30
+numberOfUrlsToCrawl -> Web Crawler will stop once it reaches that number of crawled URLs, must be x > 0
 ```
 
 Project structure

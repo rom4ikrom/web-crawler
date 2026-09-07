@@ -2,6 +2,7 @@ package com.monzo.webcrawler.infrastructure.repository;
 
 import com.monzo.webcrawler.domain.listener.PageStoredListener;
 import com.monzo.webcrawler.domain.model.Page;
+import com.monzo.webcrawler.domain.url.UrlNormalisationResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
+import static com.monzo.webcrawler.domain.url.UrlNormalisationResult.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -34,8 +36,10 @@ class InMemoryPageRepositoryTest {
         // given
         Page page = Page.builder()
                 .id("a-page-id")
-                .url("http://something.com")
-                .urls(List.of())
+                .crawledUrl(new NormalisedUrl("http://something.com", "something.com"))
+                .sameDomainUrls(List.of())
+                .otherDomainUrls(List.of())
+                .invalidUrls(List.of())
                 .build();
 
         // when

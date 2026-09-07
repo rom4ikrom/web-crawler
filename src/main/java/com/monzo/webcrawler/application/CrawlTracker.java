@@ -14,15 +14,10 @@ public class CrawlTracker {
     private final AtomicInteger pending = new AtomicInteger();
     private final Object monitor = new Object();
 
-    private final String startUrlDomain;
-    private final int numberOfLinksToDiscover;
+    private final int numberOfUrlsToCrawl;
 
     public synchronized boolean submit(NormalisedUrl normalisedUrl) {
-        if (!normalisedUrl.hasSameDomainAs(startUrlDomain)) {
-            return false;
-        }
-
-        if (visited.size() >= numberOfLinksToDiscover) {
+        if (visited.size() >= numberOfUrlsToCrawl) {
             return false;
         }
 
